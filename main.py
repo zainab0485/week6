@@ -1,33 +1,9 @@
-import pandas as pd
 import pickle
+import matplotlib.pyplot as plt
 
-from preprocessing import clean_text
+from preprocessing import load_dataset, explore_dataset, preprocess_dataset, clean_text
 from model import extract_features, split_data, train_model
 from evaluation import evaluate_model
-
-
-def load_dataset(path):
-   df = pd.read_csv(path)
-   return df
-
-
-def explore_dataset(df):
-   print("First 5 rows:")
-   print(df.head())
-
-   print("\nColumns:")
-   print(df.columns)
-
-   print("\nMissing values:")
-   print(df.isnull().sum())
-
-   print("\nLabel distribution:")
-   print(df["label"].value_counts())
-
-
-def preprocess_dataset(df):
-   df["clean_text"] = df["text"].apply(clean_text)
-   return df
 
 
 def save_model(model, vectorizer):
@@ -74,11 +50,21 @@ if __name__ == "__main__":
 
    nb_model = train_model(X_train, y_train, "naive_bayes")
    print("\nNaive Bayes Results:")
-   evaluate_model(nb_model, X_test, y_test)
+   nb_acc = evaluate_model(nb_model, X_test, y_test, "Naive Bayes")
 
    lr_model = train_model(X_train, y_train, "logistic_regression")
    print("\nLogistic Regression Results:")
-   evaluate_model(lr_model, X_test, y_test)
+   lr_acc = evaluate_model(lr_model, X_test, y_test, "Logistic Regression")
+
+   models = ["Naive Bayes", "Logistic Regression"]
+   accuracies = [nb_acc, lr_acc]
+
+   plt.bar(models, accuracies)
+   plt.title("Model Accuracy Comparison")
+   plt.ylabel("Accuracy")
+   plt.ylim(0, 1)
+   plt.savefig("model_comparison.png")
+   plt.close()
 
    save_model(lr_model, vectorizer)
 

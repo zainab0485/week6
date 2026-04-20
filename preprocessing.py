@@ -5,17 +5,6 @@ from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 def load_dataset(path):
    df = pd.read_csv(path)
-
-   if "text" not in df.columns:
-       if "tweet" in df.columns:
-           df = df.rename(columns={"tweet": "text"})
-       elif "review" in df.columns:
-           df = df.rename(columns={"review": "text"})
-
-   if "label" not in df.columns and "sentiment" in df.columns:
-       mapping = {"negative": 0, "neutral": 1, "positive": 2}
-       df["label"] = df["sentiment"].map(mapping)
-
    return df
 
 
